@@ -1,0 +1,26 @@
+{
+  "name": "thot-require",
+  "version": "0.1.0",
+  "description": "Alternative to nodes built-in require that is more performant and allows the user to require directories and based on the current working directory",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thotjs/thot-require.git"
+  },
+  "keywords": [
+    "require",
+    "directory"
+  ],
+  "author": "Joshwa Fugett <jfugett27@thotjs.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thotjs/thot-require/issues"
+  },
+  "homepage": "https://github.com/thotjs/thot-require",
+  "dependencies": {
+    "thot-cwd": "0.0.4"
+  }
+}
