@@ -1,0 +1,10 @@
+able to handle both sync and async requires
+able to support both file and directory includes
+able to handle local requires based on the current working directory
+ability to specify the cwd or to have it inferred based on the entry point
+able to support gulp style file includes
+ability to add hooks to the requires (and remove those hooks)
+ability to get the loading time of the files
+ability to support additional file extensions
+support for native modules, npm modules, and user code
+
