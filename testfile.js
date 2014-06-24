@@ -1,7 +1,7 @@
 'use strict';
 
-require('./index')(function(time){
-  console.log(time);
-});
+var req = require('./index')();
 
-require('./package.json');
+req.require('./package.json');
+req.require('./specs', true);
+req.require(['./specs/*.js']);

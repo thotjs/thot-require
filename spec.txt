@@ -1,10 +1,28 @@
-able to handle both sync and async requires
-able to support both file and directory includes
-able to handle local requires based on the current working directory
-ability to specify the cwd or to have it inferred based on the entry point
-able to support gulp style file includes
-ability to add hooks to the requires (and remove those hooks)
-ability to get the loading time of the files
-ability to support additional file extensions
-support for native modules, npm modules, and user code
+'npm || local'
+'.relative file'
+'~/local to cwd'
+[globs, are, arrays]
 
+needs to be at least as fast as normal require, faster is better ;)
+
+events
+-------------
+require started
+cache hit
+cache miss
+require finished
+loadStringStarted
+loadStringFinished
+
+// how to handle a file synchronously
+1) Get the filepath
+2) Resolve the filepath to it's state
+
+3) See if the filepath is a directory
+4) If it's a directory look for a package.json
+5) If there's a package.json use it to load the main file
+6) If there's no package.json see if there's an index file with the allowed extensions
+7) If there's no index.* file go up a level and see if the last section of the path is a filename
+8) If it's not a directory try adding the file extensions
+9) If no file extensions are available try a direct loading
+10) If all of these fail check the
