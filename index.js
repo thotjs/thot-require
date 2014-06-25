@@ -5,6 +5,8 @@ var fs = require('fs');
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
+var handleSyncFile = require('./lib/syncFIle');
+
 var jsonHandler = require('./handlers/json.js');
 var jsHandler = require('./handlers/js.js');
 var nodeHandler = require('./handlers/node.js');
@@ -47,7 +49,7 @@ ThotRequire.prototype.require = function require(filePath, namespace){
   //handle globs here
   if(Array.isArray(filePath)){
     this.emit('requireStarted', filePath, 'glob');
-    result = handleSyncGlob(filePath);
+    result = null;//handleSyncGlob(filePath);
     return result;
   }
 
@@ -55,12 +57,12 @@ ThotRequire.prototype.require = function require(filePath, namespace){
   if(namespace){
     this.emit('requireStarted', filePath, 'directory');
 
-    result = handleSyncDirectory(filePath);
+    result = null;//handleSyncDirectory(filePath);
     return result;
   }
 
   // handle files here
-  result = handleSyncFile(filePath);
+  result = handleSyncFile(filePath, this.cwd, this.handlers);
   return result;
 };
 
