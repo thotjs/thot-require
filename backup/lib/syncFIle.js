@@ -47,7 +47,7 @@ module.exports = function syncFile(filePath, cwd, extensions){
 
   // if it's a native module we just return the native module
   if(nativeObj[filePath]){
-    return nativeObj.require(filePath);
+    return require(filePath);
   }
 
   // it's not a native module so have to use the resolve algorithm to find the appropriate npm module

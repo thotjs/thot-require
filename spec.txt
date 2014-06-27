@@ -1,3 +1,6 @@
+the library should support both callback and promise style (bluebird for the win)
+it should store paths that are used in lru style to speed up access...? not sure how to handle this one but I do see a possible speed gain for it... maybe
+
 'npm || local'
 '.relative file'
 '~/local to cwd'
