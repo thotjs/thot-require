@@ -16,20 +16,29 @@ describe('thotRequire', function(){
     done();
   });
 
-  it('Should allow changing the current directory async');
+  it('Should allow changing the current directory async', function(done){
+    thotRequire.changeDirectoryAsync(null, function(err, results){
+      assert.equal(results, process.cwd());
+      assert.equal(err, null);
+      done();
+    });
+  });
+
+  it('Should support promises', function(done){
+    var prom = thotRequire.changeDirectoryAsync('./');
+    prom.then(function(result){
+      assert.equal(result, process.cwd() + '/specs');
+      done();
+    }, function(err){
+      assert.equal(err, null);
+      done();
+    });
+  });
 
   it('Should allow reverting back to the default working directory', function(done){
     thotRequire.changeDirectory();
     assert.equal(thotRequire.cwd, process.cwd());
     done();
-  });
-
-  it('Should emit the directory set event', function(done){
-    thotRequire.on('directorySet', function(dir){
-      assert.equal(dir, process.cwd());
-      done();
-    });
-    thotRequire.changeDirectory();
   });
 
   it('Should be able to require native modules', function(done){
@@ -38,27 +47,19 @@ describe('thotRequire', function(){
     done();
   });
 
-  it('Should emit requireStarted', function(done){
-    thotRequire.once('requireStarted', function(filePath){
-      assert.equal('path', filePath);
+  it('Should be able to require native modules async', function(done){
+    thotRequire.requireAsync('path', function(err, result){
+      assert.equal(typeof result.resolve, 'function');
+      assert.equal(err, null);
       done();
     });
-    var path = thotRequire.require('path');
-    assert.equal(typeof path.resolve, 'function');
   });
 
-  it('Should emit requireFinished', function(done){
-    thotRequire.once('requireFinished', function(filePath){
-      assert.equal('path', filePath);
-      done();
-    });
-    var path = thotRequire.require('path');
-    assert.equal(typeof path.resolve, 'function');
+  it('Should be able to require npm modules', function(done){
+    var cwd = thotRequire.require('thot-cwd');
+    console.log(cwd);
+    done();
   });
-
-  it('Should be able to require native modules async');
-
-  it('Should be able to require npm modules');
 
   it('Should be able to require npm modules async');
 
@@ -94,33 +95,21 @@ describe('thotRequire', function(){
 
   it('Should be able to handle circular dependencies async');
 
-  it('Should have tracing disable by default');
+  it('Should allow clearing the cache', function(done){
+    thotRequire.clearCache();
+    assert.equal(Object.keys(thotRequire.cache).length, 0);
+    done();
+  });
 
-  it('Should allow tracing to be enabled');
+  it('Should allow removing a specific file from the cache');// this should follow the same logic as require
 
-  it('Should emit tracingEnabled');
-
-  it('Should allow tracing to be disabled');
-
-  it('Should emit tracingDisabled');
-
-  it('Should emit cacheHit');
-
-  it('Should emit cacheMiss');
-
-  it('Should allow clearing the cache');
-
-  it('Should emit cacheCleaned');
-
-  it('Should allow removing a specifc file from the cache');
-
-  it('Should emit removedFromCache');
-
-  it('Should return the current cache');
+  it('Should return the current cache', function(done){
+    var cache = thotRequire.getCache();
+    assert.equal(typeof cache, 'object');
+    done();
+  });
 
   it('Should allow loading a string as a module');
-
-  it('Should emit stringLoaded');
 
   it('Should allow loading a string as a module async');
 
@@ -128,17 +117,17 @@ describe('thotRequire', function(){
 
   it('Should be able to handle dependencies when a string is loaded async');
 
+  it('Should have the default handlers enabled by default');
+
   it('Should allow adding new extension handlers');
 
-  it('Should emit extensionAdded');
-
-  it('Should return a list of handlers');
+  it('Should return a list of handlers', function(done){
+    var handlers = thotRequire.getHandlers();
+    assert.equal(typeof handlers, 'object');
+    done();
+  });
 
   it('Should allow disabling of handlers');
 
-  it('Should emit extensionDisabled');
-
   it('Should allow enabling of handlers');
-
-  it('Should emit extensionEnabled');
 });

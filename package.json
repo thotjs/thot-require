@@ -22,6 +22,7 @@
   "homepage": "https://github.com/thotjs/thot-require",
   "dependencies": {
     "bluebird": "^2.1.3",
+    "resolve": "^0.7.1",
     "thot-cwd": "0.0.4"
   }
 }
