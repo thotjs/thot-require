@@ -1,31 +1,41 @@
-the library should support both callback and promise style (bluebird for the win)
-it should store paths that are used in lru style to speed up access...? not sure how to handle this one but I do see a possible speed gain for it... maybe
+Loaders can be added at any point and are created using a new method for example:
+require.string
+require.http
+etc..
 
-'npm || local'
-'.relative file'
-'~/local to cwd'
-[globs, are, arrays]
+Transformers can be created at any time but I'm still not sure how to show which ones should be used in a manner that makes sense... I'm thinking of adopting the webpack style !operator for distinguishing them and making it so that the order determines the order of the transformers that are used. The other option is to automatically call all transformers and then let the transformers somehow determine when they should be used but I don't particularly like that idea
 
-needs to be at least as fast as normal require, faster is better ;)
+compilers should be based on extensions and there should only be one compiler per extension (that compiler could user others though)
 
-events
--------------
-require started
-cache hit
-cache miss
-require finished
-loadStringStarted
-loadStringFinished
+I'm not sure if I can make require.http load in a synchronous manner but I should be able to wrap them in a way that behaves as such or at least make sure that they are documented as async only methods
 
-// how to handle a file synchronously
-1) Get the filepath
-2) Resolve the filepath to it's state
+I'm still debating but I'm not sure I really see a point to supporting the browser or supporting amd style modules as they can make the system a lot more complicated than is necessary but perhaps using a transformer to specify would work well
 
-3) See if the filepath is a directory
-4) If it's a directory look for a package.json
-5) If there's a package.json use it to load the main file
-6) If there's no package.json see if there's an index file with the allowed extensions
-7) If there's no index.* file go up a level and see if the last section of the path is a filename
-8) If it's not a directory try adding the file extensions
-9) If no file extensions are available try a direct loading
-10) If all of these fail check the
+Possible loaders
+-----------------
+file
+string
+
+Possible Transformers
+-----------------------
+Coffeescript
+Typescript
+etc..
+
+Possible Compilers
+--------------------
+JSON
+JS
+Node
+??
+
+loaders - responsible for resolving the filepath and loading/creating a string for the transformers and compilers to work on
+transformers - responsible for handling any manipulations needed on the string prior to handing them off to a compiler
+compilers - compilers are responsible for creating the needed javascript or built in node dll to something that other modules can understand, these should provide the commonjs module.exports for sanity reasons when using them with other libraries
+
+You may run code through as many transformers as you like but the order may be significant
+
+Each string should only be marked as completed once by the compiler, you can chain compilers together but after they are marked as complete the chain will be broken and the code returned
+
+1) Must be faster than the normal require implementation
+2) If possible I would like to have it run in the browser as well, we'll see if I can make that work

@@ -9,7 +9,11 @@ suite('thotRequire Sync', function(){
   set('mintime', 2000);
 
   bench('native', function(){
-      req.require('path');
+    req.require('path');
+  });
+
+  bench('npm', function(){
+    req.require('thot-harmony');
   });
 });
 
@@ -30,5 +34,9 @@ suite('nodeRequire', function(){
 
   bench('native', function(){
     require('path');
+  });
+
+  bench('npm', function(){
+    require('thot-harmony');
   });
 });
