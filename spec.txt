@@ -13,10 +13,10 @@ I'm still debating but I'm not sure I really see a point to supporting the brows
 
 Possible loaders
 -----------------
-file
+file - default always not able to override
 string
 
-Possible Transformers
+Possible Transformers require('some/file.cs!'); require('some/file.cs!typescript');
 -----------------------
 Coffeescript
 Typescript

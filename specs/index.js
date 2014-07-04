@@ -3,82 +3,110 @@
 var should = require('should');
 
 var thotRequire = require('../index');
-var path = require('path');
 var req = thotRequire();
+var path = require('path');
 
 describe('thot-require', function(){
-  it('Should resolve to a function');
+  it('Should resolve to a function', function(done){
+    thotRequire.should.be.an.instanceOf(Function);
+    done();
+  });
 
-  it('Should return an object');
+  it('Should return an object', function(done){
+    req.should.be.an.instanceOf(Object);
+    done();
+  });
 
-  it('Should have a default current working directory');
+  it('Should have a default current working directory', function(done){
+    req.getCWD().should.be.an.instanceOf(String);
+    done();
+  });
 
-  it('Should allow setting of the current working directory at creation');
+  it('Should have the same default directory as the requiring file', function(done){
+    req.getCWD().should.be.equal(__dirname);
+    done();
+  });
 
-  it('Should allow setting of the current working directory at runtime');
+  it('Should allow setting of the current working directory at creation', function(done){
+    let reqTemp = thotRequire('../');
+    reqTemp.getCWD().should.be.equal(path.resolve(__dirname, '../'));
+    done();
+  });
 
-  it('Should return the current working directory');
+  it('Should allow setting of the current working directory at runtime', function(done){
+    req.setCWD('../');
+    req.getCWD().should.be.equal(path.resolve(__dirname, '../'));
+    req.setCWD();
+    done();
+  });
 
-  it('Should support the current working directory as an absolute path');
+  it('Should emit a directory changed event', function(done){
+    req.setCWD('../');
+    req.once('directory.changed', function(){
+      done();
+    });
+    req.setCWD();
+  });
 
-  it('Should support the current working directory as a relative path');
+  it('Should return the current working directory', function(done){
+    req.getCWD().should.be.equal(__dirname);
+    done();
+  });
 
-  it('Should support the current working directory as a local path');
+  it('Should support the current working directory as an absolute path', function(done){
+    req.setCWD('/');
+    req.getCWD().should.be.equal('/');
+    req.setCWD();
+    done();
+  });
+
+  it('Should support the current working directory as a relative path', function(done){
+    req.setCWD('../');
+    req.getCWD().should.be.equal(path.resolve(__dirname, '../'));
+    req.setCWD();
+    done();
+  });
+
+  it('Should support the current working directory as a local path', function(done){
+    req.setCWD('~/index.js');
+    req.getCWD().should.be.equal(path.resolve(__dirname, '../'));
+    req.setCWD();
+    done();
+  });
+
+// module paths
+  it('Should set the default module paths when required');
+
+  it('Should add the module paths based on the parent module when it\' instantiated');
+
+  it('Should update the module paths when the cwd is updated');
 
   it('Should have a method to get the module paths');
 
   it('Should have a method to add a path to the module paths');
 
+  it('Should have a module path added event');
+
   it('Should be able to set a new module path to recursive');
 
   it('Should be able to remove a module path');
 
+  it('Should emit a module path removed event');
+
   it('Should be able to recursively remove a module path');
 
+// requires
   it('Should be able to require files synchronously');
 
+  it('Should emit a require started event');
+
+  it('Should emit a require finished event');
+
   it('Should be able to require files asynchronously');
-
-  it('Should support promises for all async methods');
-
-  it('Should be able to resolve a filepath synchronously');
-
-  it('Should be able to resolve a filepath asynchronously');
 
   it('Should be able to support requiring directories into a namespace');
 
   it('Should be able to support requiring based on globs');
-
-  it('Should support resolving a namespace');
-
-  it('Should be able to support resolving a glob');
-
-  it('Should have tracing disabled by default');
-
-  it('Should support enabling tracing at runtime');
-
-  it('Should support disabling tracing at runtime');
-
-  it('Should return the current state of tracing');
-
-  it('Should return the traces that were created');
-
-  // start, resolve, load, transform(s), compile, end, total
-  it('Should have multiple points per trace');
-
-  it('Should be able to clear the existing traces');
-
-  it('Should support caching');
-
-  it('Should support getting the cache');
-
-  it('Should support clearing the cache');
-
-  it('Should support removing a single item from the cache');
-
-  it('Should support loading strings synchronously');
-
-  it('Should support loading strings asynchronously');
 
   it('Should override the built-in require on required modules');
 
@@ -94,51 +122,138 @@ describe('thot-require', function(){
 
   it('Should support requiring local paths');
 
+// promises
+  it('Should support promises and callbacks');
+
+// resolving
+  it('Should be able to resolve a filepath synchronously');
+
+  it('Should be able to resolve a filepath asynchronously');
+
+  it('Should support resolving a namespace');
+
+  it('Should be able to support resolving a glob');
+
   it('Should allow adding a new resolver');
+
+  it('Should emit a resolver added event');
 
   it('Should return a list of the current resolvers');
 
+// tracing
+  it('Should have tracing disabled by default');
+
+  it('Should support enabling tracing at runtime');
+
+  it('Should emit a tracing enabled event');
+
+  it('Should support disabling tracing at runtime');
+
+  it('Should emit a tracing disabled event');
+
+  it('Should return the current state of tracing');
+
+  it('Should return the traces that were created');
+
+  // start, resolve, load, transform(s), compile, end, total
+  it('Should have multiple points per trace');
+
+  it('Should be able to clear the existing traces');
+
+  it('Should emit a tracing cleared event');
+
+// caching
+  it('Should support caching');
+
+  it('Should support getting the cache');
+
+  it('Should support clearing the cache');
+
+  it('Should support a cache cleared event');
+
+  it('Should support removing a single item from the cache');
+
+  it('Should emit a cache item removed event');
+
+// strings
+  it('Should support loading strings synchronously');
+
+  it('Should emit a string load started event');
+
+  it('Should emit a string load finished event');
+
+  it('Should support loading strings asynchronously');
+
+// loaders
   it('Should allow the adding of new loaders');
+
+  it('Should emit a loader added event');
 
   it('Should return a list of the current loaders');
 
   it('Should allow disabling a loader');
 
+  it('Should emit a loader disabled event');
+
   it('Should allow enabling a loader');
+
+  it('Should emit a loader enabled event');
 
   it('Should return a list of the active loaders');
 
+// transformers
   it('Should support adding new transformers');
+
+  it('Should emit a transformer added event');
 
   it('Should support getting a list of transformers');
 
   it('Should support disabling a transformer');
 
+  it('Should emit a transformer disabled event');
+
   it('Should support enabling a transformer');
+
+  it('Should emit a transformer enabled event');
 
   it('Should support getting list of the active transformers');
 
   it('Should support using multiple transformers in a single handler');
 
+// compilers
   it('Should support adding new compilers');
+
+  it('Should emit a compiler added event');
 
   it('Should support getting a list of compilers');
 
   it('Should support disabling a compiler');
 
+  it('Should emit a compiler disabled event');
+
   it('Should support enabling a compiler');
+
+  it('Should emit a compiler enabled event');
 
   it('Should return a list of active compilers');
 
+// extensions
   it('Should return a list of extensions');
 
   it('Should support disabling an extension');
 
+  it('Should emit an extension disabled event');
+
   it('Should support enabling an extension');
+
+  it('Should emit an extension enabled event');
 
   it('Should return a list of active extensions');
 
+// hooks
   it('Should have a preResolve hook');
+
+  it('Should emit a hook added event');
 
   it('Should have a preLoad hook');
 
@@ -148,20 +263,23 @@ describe('thot-require', function(){
 
   it('Should have a postCompile hook');
 
-  it('Should extend eventEmitter');
+// event emitter
+  it('Should extend eventEmitter2');
 
+// module support
   it('Should support commonjs modules');
 
   it('Should support amd modules');
 
   it('Should support es6 modules');
 
+// http
   it('Should support loading over http');
 
   it('Should support async loading over http');
 
+// stack traces & errors
   it('Should support stack traces properly');
 
-  // need to figure out what events to support...
-
+  it('Should emit an error event');
 });
