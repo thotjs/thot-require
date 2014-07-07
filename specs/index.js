@@ -75,25 +75,76 @@ describe('thot-require', function(){
   });
 
 // module paths
-  it('Should set the default module paths when required');
+  it('Should set the default module paths when required', function(done){
+    var module_paths = req.getModulePaths();
+    module_paths.should.be.an.instanceOf(Array);
+    module_paths.length.should.be.greaterThan(4);
+    done();
+  });
 
-  it('Should add the module paths based on the parent module when it\' instantiated');
+  it('Should add the module paths based on the parent module when it\' instantiated', function(done){
+    var module_paths = req.getModulePaths();
+    module_paths[0].should.be.equal(__dirname + '/node_modules');
+    done();
+  });
 
-  it('Should update the module paths when the cwd is updated');
+  it('Should update the module paths when the cwd is updated', function(done){
+    req.setCWD('../');
+    var module_paths = req.getModulePaths();
+    module_paths[0].should.be.equal(path.dirname(__dirname) + '/node_modules');
+    req.setCWD();
+    done();
+  });
 
-  it('Should have a method to get the module paths');
+  it('Should have a method to get the module paths', function(done){
+    req.getModulePaths.should.be.an.instanceOf(Function);
+    done();
+  });
 
-  it('Should have a method to add a path to the module paths');
+  it('Should be able to add a new module path', function(done){
+    req.addModulePath('./');
+    req.shared.module_paths[0].should.be.equal(__dirname);
+    done();
+  });
 
-  it('Should have a module path added event');
+  it('Should have a module path added event', function(done){
+    req.once('modulePathAdded', function(){
+      done();
+    });
+    req.addModulePath('../');
+  });
 
-  it('Should be able to set a new module path to recursive');
+  it('Should be able to set a new module path to recursive', function(done){
+    req.addModulePath('custom_modules', true);
+    var modules = req.getModulePaths();
+    modules.indexOf('/custom_modules').should.not.be.equal(-1);
+    done();
+  });
 
-  it('Should be able to remove a module path');
+  it('Should be able to remove a module path', function(done){
+    req.removeModulePath(path.dirname(__dirname) + '/custom_modules');
 
-  it('Should emit a module path removed event');
+    var modules = req.getModulePaths();
+    modules.indexOf(path.dirname(__dirname) + '/custom_modules').should.be.equal(-1);
 
-  it('Should be able to recursively remove a module path');
+    req.addModulePath(path.dirname(__dirname) + '/custom_modules');
+    done();
+  });
+
+  it('Should emit a module path removed event', function(done){
+    req.once('modulePathRemoved', function(){
+      done();
+    });
+    req.removeModulePath('/custom_modules');
+    req.addModulePath('/custom_modules');
+  });
+
+  it('Should be able to recursively remove a module path', function(done){
+    req.removeModulePath('custom_modules', true);
+    var modules = req.getModulePaths();
+    modules.should.not.containEql('/custom_modules');
+    done();
+  });
 
 // requires
   it('Should be able to require files synchronously');
@@ -126,7 +177,9 @@ describe('thot-require', function(){
   it('Should support promises and callbacks');
 
 // resolving
-  it('Should be able to resolve a filepath synchronously');
+  it('Should be able to resolve a filepath synchronously', function(done){
+    done();
+  });
 
   it('Should be able to resolve a filepath asynchronously');
 
@@ -138,7 +191,7 @@ describe('thot-require', function(){
 
   it('Should emit a resolver added event');
 
-  it('Should return a list of the current resolvers');
+  it('Shoulsd return a list of the current resolvers');
 
 // tracing
   it('Should have tracing disabled by default');
